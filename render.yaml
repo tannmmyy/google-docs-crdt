@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: google-docs-crdt
+    runtime: node
+    buildCommand: cd server && npm install && cd ../client && npm install && npm run build
+    startCommand: cd server && npx ts-node src/server.ts
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
