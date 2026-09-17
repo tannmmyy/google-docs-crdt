@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Collaboration from '@tiptap/extension-collaboration';
@@ -19,17 +19,26 @@ import { AlertTriangle, Flame } from 'lucide-react';
 
 import { CollabSession } from '../lib/collaboration';
 import { GoogleDocsToolbar } from './GoogleDocsToolbar';
+import { ActivityActionType } from '../lib/types';
 
 interface EditorCanvasProps {
   session: CollabSession;
   onEditorReady?: (editor: any) => void;
+  onActivityLogged?: (type: ActivityActionType, actionText: string, snippet?: string) => void;
   showRuler?: boolean;
 }
 
-export const EditorCanvas: React.FC<EditorCanvasProps> = ({ session, onEditorReady, showRuler = true }) => {
+export const EditorCanvas: React.FC<EditorCanvasProps> = ({ 
+  session, 
+  onEditorReady, 
+  onActivityLogged,
+  showRuler = true 
+}) => {
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
   const [collisionUsers, setCollisionUsers] = useState<string[]>([]);
+  const lastTextRef = useRef<string>('');
+  const debounceTimerRef = useRef<any>(null);
 
   const editor = useEditor({
     extensions: [
@@ -83,6 +92,47 @@ export const EditorCanvas: React.FC<EditorCanvasProps> = ({ session, onEditorRea
       onEditorReady(editor);
     }
   }, [editor, onEditorReady]);
+
+  // Track text mutations and log activity
+  useEffect(() => {
+    if (!editor) return;
+
+    // Initial text snapshot
+    lastTextRef.current = editor.getText();
+
+    const handleTransaction = ({ transaction }: any) => {
+      if (!transaction.docChanged) return;
+
+      const newText = editor.getText();
+      const oldText = lastTextRef.current;
+      lastTextRef.current = newText;
+
+      const diff = newText.length - oldText.length;
+      if (diff === 0) return;
+
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+
+      debounceTimerRef.current = setTimeout(() => {
+        if (diff > 0) {
+          // Extract short preview of the text that was added
+          const sample = newText.trim().split(/\s+/).slice(-6).join(' ');
+          onActivityLogged?.('insert', `Added text (+${diff} chars)`, sample ? `"${sample}"` : undefined);
+        } else if (diff < 0) {
+          onActivityLogged?.('delete', `Deleted text (${Math.abs(diff)} chars)`);
+        }
+      }, 1400);
+    };
+
+    editor.on('transaction', handleTransaction);
+    return () => {
+      editor.off('transaction', handleTransaction);
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [editor, onActivityLogged]);
 
   // Cursor Contention / Multi-User Workzone Collision Detector
   useEffect(() => {

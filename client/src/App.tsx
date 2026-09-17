@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { createCollabSession, CollabSession } from './lib/collaboration';
-import { UserAwareness, ConnectionStatus } from './lib/types';
+import { UserAwareness, ConnectionStatus, ActivityItem, ActivityActionType } from './lib/types';
 import { GoogleDocsHeader } from './components/GoogleDocsHeader';
 import { EditorCanvas } from './components/EditorCanvas';
 import { SplitScreenView } from './components/SplitScreenView';
 import { NetworkChaosPanel } from './components/NetworkChaosPanel';
+import { ActivityFeedDrawer } from './components/ActivityFeedDrawer';
 import { ShareModal } from './components/ShareModal';
 import { VersionHistoryModal } from './components/VersionHistoryModal';
 
@@ -20,20 +21,85 @@ export const App: React.FC = () => {
   const [activeUsers, setActiveUsers] = useState<UserAwareness[]>([]);
   const [isSplitScreen, setIsSplitScreen] = useState(false);
   const [isChaosPanelOpen, setIsChaosPanelOpen] = useState(false);
+  const [isActivityFeedOpen, setIsActivityFeedOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [isSimulatedOffline, setIsSimulatedOffline] = useState(false);
   const [editorInstance, setEditorInstance] = useState<any>(null);
+  const [activities, setActivities] = useState<ActivityItem[]>([]);
 
   // Initialize primary collaboration session
   const session: CollabSession = useMemo(() => {
     return createCollabSession(roomName);
   }, [roomName]);
 
+  // Shared CRDT activity feed array
+  const yActivities = useMemo(() => {
+    return session.doc.getArray<ActivityItem>('activity_feed');
+  }, [session.doc]);
+
+  // Observe real-time activity feed changes across all connected peers
+  useEffect(() => {
+    setActivities(yActivities.toArray());
+
+    const handleActivitiesChange = () => {
+      setActivities(yActivities.toArray());
+    };
+
+    yActivities.observe(handleActivitiesChange);
+
+    return () => {
+      yActivities.unobserve(handleActivitiesChange);
+    };
+  }, [yActivities]);
+
+  // Helper to log collaborative events to the shared CRDT Y.Array
+  const logActivity = (type: ActivityActionType, actionText: string, snippet?: string) => {
+    const item: ActivityItem = {
+      id: 'act_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+      userId: session.user.id,
+      userName: session.user.name,
+      userColor: session.user.color,
+      userAvatar: session.user.avatar,
+      type,
+      actionText,
+      snippet: snippet ? snippet.substring(0, 80) : undefined,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+    };
+
+    session.doc.transact(() => {
+      yActivities.insert(0, [item]);
+      if (yActivities.length > 80) {
+        yActivities.delete(80, yActivities.length - 80);
+      }
+    });
+  };
+
   // Cleanup session on unmount or room change
   useEffect(() => {
     return () => {
       session.destroy();
+    };
+  }, [session]);
+
+  // Log user joining when provider connects
+  useEffect(() => {
+    let hasLoggedJoin = false;
+    const handleSync = (isSynced: boolean) => {
+      if (isSynced && !hasLoggedJoin) {
+        hasLoggedJoin = true;
+        logActivity('join', `${session.user.name} joined the session`);
+      }
+    };
+
+    if (session.provider.synced) {
+      handleSync(true);
+    } else {
+      session.provider.on('sync', handleSync);
+    }
+
+    return () => {
+      session.provider.off('sync', handleSync);
     };
   }, [session]);
 
@@ -87,7 +153,9 @@ export const App: React.FC = () => {
   }, [session, isSimulatedOffline]);
 
   const handleTitleChange = async (newTitle: string) => {
+    const oldTitle = docTitle;
     setDocTitle(newTitle);
+    logActivity('rename', `Renamed document from "${oldTitle}" to "${newTitle}"`);
     try {
       await fetch(`/api/documents/${roomName}/metadata`, {
         method: 'PATCH',
@@ -104,10 +172,12 @@ export const App: React.FC = () => {
       session.provider.connect();
       setIsSimulatedOffline(false);
       setConnectionStatus('connecting');
+      logActivity('system', `${session.user.name} went back Online`);
     } else {
       session.provider.disconnect();
       setIsSimulatedOffline(true);
       setConnectionStatus('offline');
+      logActivity('system', `${session.user.name} simulated Network Disconnect`);
     }
   };
 
@@ -130,6 +200,7 @@ export const App: React.FC = () => {
     a.download = `${docTitle.toLowerCase().replace(/\s+/g, '-')}.md`;
     a.click();
     URL.revokeObjectURL(url);
+    logActivity('system', `Exported document as Markdown (.md)`);
   };
 
   const handleExportHtml = () => {
@@ -159,9 +230,11 @@ ${html}
     a.download = `${docTitle.toLowerCase().replace(/\s+/g, '-')}.html`;
     a.click();
     URL.revokeObjectURL(url);
+    logActivity('system', `Exported document as HTML (.html)`);
   };
 
   const handleUpdateUser = (newName: string, newColor: string) => {
+    const oldName = session.user.name;
     session.user.name = newName;
     session.user.color = newColor;
     session.user.avatar = newName.trim().charAt(0).toUpperCase() || 'U';
@@ -171,6 +244,16 @@ ${html}
       name: newName,
       color: newColor,
       avatar: session.user.avatar,
+    });
+
+    if (oldName !== newName) {
+      logActivity('rename', `Updated name to "${newName}"`);
+    }
+  };
+
+  const handleClearActivities = () => {
+    session.doc.transact(() => {
+      yActivities.delete(0, yActivities.length);
     });
   };
 
@@ -184,6 +267,9 @@ ${html}
         activeUsers={activeUsers}
         currentUser={session.user}
         onUpdateUser={handleUpdateUser}
+        onToggleActivityFeed={() => setIsActivityFeedOpen(!isActivityFeedOpen)}
+        isActivityFeedOpen={isActivityFeedOpen}
+        activityCount={activities.length}
         onToggleSplitScreen={() => setIsSplitScreen(!isSplitScreen)}
         isSplitScreen={isSplitScreen}
         onToggleChaosPanel={() => setIsChaosPanelOpen(!isChaosPanelOpen)}
@@ -204,8 +290,18 @@ ${html}
           <EditorCanvas
             session={session}
             onEditorReady={(editor) => setEditorInstance(editor)}
+            onActivityLogged={logActivity}
           />
         )}
+
+        {/* Real-Time Activity Feed Drawer */}
+        <ActivityFeedDrawer
+          isOpen={isActivityFeedOpen}
+          onClose={() => setIsActivityFeedOpen(false)}
+          activities={activities}
+          currentUser={session.user}
+          onClearFeed={handleClearActivities}
+        />
 
         {/* Distributed Chaos & CRDT Telemetry Drawer */}
         <NetworkChaosPanel

@@ -24,3 +24,17 @@ export interface NetworkSimulationConfig {
   packetLossRate: number; // 0 to 1
   isSimulatedOffline: boolean;
 }
+
+export type ActivityActionType = 'insert' | 'delete' | 'format' | 'join' | 'rename' | 'table' | 'system';
+
+export interface ActivityItem {
+  id: string;
+  userId: string;
+  userName: string;
+  userColor: string;
+  userAvatar: string;
+  type: ActivityActionType;
+  actionText: string;
+  snippet?: string;
+  timestamp: string;
+}

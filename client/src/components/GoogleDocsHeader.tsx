@@ -28,6 +28,9 @@ interface GoogleDocsHeaderProps {
   activeUsers: UserAwareness[];
   currentUser: UserAwareness;
   onUpdateUser?: (name: string, color: string) => void;
+  onToggleActivityFeed: () => void;
+  isActivityFeedOpen: boolean;
+  activityCount: number;
   onToggleSplitScreen: () => void;
   isSplitScreen: boolean;
   onToggleChaosPanel: () => void;
@@ -47,6 +50,9 @@ export const GoogleDocsHeader: React.FC<GoogleDocsHeaderProps> = ({
   activeUsers,
   currentUser,
   onUpdateUser,
+  onToggleActivityFeed,
+  isActivityFeedOpen,
+  activityCount,
   onToggleSplitScreen,
   isSplitScreen,
   onToggleChaosPanel,
@@ -319,6 +325,25 @@ export const GoogleDocsHeader: React.FC<GoogleDocsHeaderProps> = ({
           >
             <Columns className="w-3.5 h-3.5 mr-1.5 text-blue-600" />
             <span>{isSplitScreen ? 'Single Mode' : 'Dual Peer Test'}</span>
+          </button>
+
+          {/* Real-Time Activity Feed Button */}
+          <button
+            onClick={onToggleActivityFeed}
+            className={`flex items-center px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+              isActivityFeedOpen 
+                ? 'bg-emerald-50 border-emerald-300 text-emerald-800 font-semibold shadow-xs' 
+                : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+            }`}
+            title="Real-Time Activity Feed: See who changed what in real-time"
+          >
+            <Activity className="w-3.5 h-3.5 mr-1.5 text-emerald-600" />
+            <span>Activity</span>
+            {activityCount > 0 && (
+              <span className="ml-1.5 px-1.5 py-0.2 bg-emerald-600 text-white rounded-full text-[10px] font-bold">
+                {activityCount}
+              </span>
+            )}
           </button>
 
           {/* Chaos / CRDT Telemetry Inspector */}
