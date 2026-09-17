@@ -1,0 +1,287 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #f0f4f9;
+    color: #202124;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+}
+
+/* Custom Google Docs Canvas Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f3f4;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #dadce0;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #bdc1c6;
+}
+
+/* ProseMirror / TipTap Editor Page Styling */
+.ProseMirror {
+  outline: none;
+  min-height: 1056px; /* standard 11 inch paper height at 96 DPI */
+  width: 816px;       /* standard 8.5 inch paper width at 96 DPI */
+  padding: 72px 72px; /* 0.75 in margin */
+  background: #ffffff;
+  color: #202124;
+  box-shadow: 0 1px 3px 1px rgba(60,64,67,.15), 0 1px 2px 0 rgba(60,64,67,.3);
+  font-family: 'Roboto', Arial, sans-serif;
+  font-size: 11pt;
+  line-height: 1.5;
+  margin: 24px auto 60px auto;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.ProseMirror p {
+  margin-bottom: 0.5rem;
+}
+
+.ProseMirror h1 {
+  font-size: 20pt;
+  font-weight: 400;
+  line-height: 1.25;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: #000000;
+}
+
+.ProseMirror h2 {
+  font-size: 16pt;
+  font-weight: 400;
+  line-height: 1.3;
+  margin-top: 1rem;
+  margin-bottom: 0.4rem;
+  color: #000000;
+}
+
+.ProseMirror h3 {
+  font-size: 13pt;
+  font-weight: 400;
+  line-height: 1.35;
+  margin-top: 0.8rem;
+  margin-bottom: 0.3rem;
+  color: #434343;
+}
+
+.ProseMirror ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.ProseMirror ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.ProseMirror blockquote {
+  border-left: 3px solid #dadce0;
+  padding-left: 1rem;
+  color: #5f6368;
+  font-style: italic;
+  margin: 0.75rem 0;
+}
+
+.ProseMirror pre {
+  background: #202124;
+  color: #f8f9fa;
+  font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+  font-size: 9.5pt;
+}
+
+.ProseMirror code {
+  background: #f1f3f4;
+  color: #d93025;
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: monospace;
+}
+
+/* Task list / Checklist */
+.ProseMirror ul[data-type="taskList"] {
+  list-style: none;
+  padding: 0;
+}
+
+.ProseMirror ul[data-type="taskList"] li {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0.25rem;
+}
+
+.ProseMirror ul[data-type="taskList"] li > label {
+  flex: 0 0 auto;
+  margin-right: 0.5rem;
+  user-select: none;
+}
+
+.ProseMirror ul[data-type="taskList"] li > div {
+  flex: 1 1 auto;
+}
+
+/* Tables in TipTap */
+.ProseMirror table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+.ProseMirror td,
+.ProseMirror th {
+  min-width: 1em;
+  border: 1px solid #dadce0;
+  padding: 6px 8px;
+  vertical-align: top;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.ProseMirror th {
+  font-weight: bold;
+  background-color: #f8f9fa;
+}
+
+.ProseMirror .selectedCell:after {
+  z-index: 2;
+  position: absolute;
+  content: "";
+  left: 0; right: 0; top: 0; bottom: 0;
+  background: rgba(26, 115, 232, 0.15);
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------- */
+/* Live Collaboration Cursors & Selection Highlighting           */
+/* ------------------------------------------------------------- */
+.collaboration-cursor__caret {
+  position: relative;
+  margin-left: -1px;
+  margin-right: -1px;
+  border-left: 2px solid;
+  border-right: 2px solid;
+  border-color: currentColor;
+  word-break: normal;
+  pointer-events: none;
+}
+
+/* Remote Collaborator Name Flag */
+.collaboration-cursor__label {
+  position: absolute;
+  top: -1.6em;
+  left: -2px;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  user-select: none;
+  color: #ffffff;
+  padding: 2px 6px;
+  border-radius: 3px 3px 3px 0;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0.95;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  transition: opacity 0.3s ease;
+  z-index: 10;
+}
+
+/* Remote selection highlight */
+.ProseMirror-yjs-selection {
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  border-radius: 2px;
+}
+
+/* ------------------------------------------------------------- */
+/* Cursor Contention / Multi-User Workzone Underline & Flagging   */
+/* ------------------------------------------------------------- */
+.cursor-collision-active {
+  text-decoration: underline wavy #f59e0b 2.5px !important;
+  text-underline-offset: 4px !important;
+  background-color: rgba(245, 158, 11, 0.12) !important;
+  border-left: 3px solid #f59e0b !important;
+  padding-left: 6px !important;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+/* Flashing caret when 2 or more users collide */
+.collaboration-cursor__caret.has-collision {
+  border-left: 3px solid #ef4444 !important;
+  border-right: 3px solid #ef4444 !important;
+  animation: caretPulse 0.9s infinite alternate;
+  z-index: 30;
+}
+
+.collaboration-cursor__caret.has-collision .collaboration-cursor__label {
+  background: #dc2626 !important;
+  font-weight: 700;
+  border: 1.5px solid #fee2e2;
+  box-shadow: 0 0 10px rgba(220, 38, 38, 0.7);
+  animation: labelFloat 1.2s ease-in-out infinite alternate;
+}
+
+.collaboration-cursor__caret.has-collision .collaboration-cursor__label::after {
+  content: " ⚠️ ACTIVE";
+  font-size: 9px;
+  color: #fef08a;
+}
+
+@keyframes caretPulse {
+  0% { transform: scaleY(1); opacity: 1; filter: drop-shadow(0 0 2px #ef4444); }
+  100% { transform: scaleY(1.15); opacity: 0.8; filter: drop-shadow(0 0 6px #f59e0b); }
+}
+
+@keyframes labelFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-2px); }
+}
+
+/* Placeholder */
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #9aa0a6;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Print styling */
+@media print {
+  body {
+    background: #ffffff;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .ProseMirror {
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+}

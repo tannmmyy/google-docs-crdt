@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Build outputs
+client/dist/
+server/dist/
+
+# Persisted document storage (binary CRDT files, not needed in source control)
+server/storage/*.ydoc
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Editor & OS files
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+
+# TypeScript cache
+*.tsbuildinfo

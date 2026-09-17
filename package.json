@@ -1,0 +1,12 @@
+{
+  "name": "google-docs-crdt",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Full-stack real-time collaborative Google Docs-style rich text editor with CRDT",
+  "scripts": {
+    "server:dev": "npm --prefix server run dev",
+    "client:dev": "npm --prefix client run dev",
+    "test:crdt": "npm --prefix server run test:crdt",
+    "build": "npm --prefix server run build && npm --prefix client run build"
+  }
+}
