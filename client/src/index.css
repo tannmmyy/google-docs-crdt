@@ -4,29 +4,35 @@
 
 @layer base {
   body {
-    background-color: #f0f4f9;
-    color: #202124;
-    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: radial-gradient(circle at 15% 25%, rgba(225, 29, 72, 0.28) 0%, transparent 45%),
+                radial-gradient(circle at 85% 75%, rgba(244, 63, 94, 0.22) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(136, 19, 55, 0.25) 0%, transparent 60%),
+                linear-gradient(135deg, #0a0408 0%, #160710 40%, #250a18 70%, #0d0309 100%);
+    background-attachment: fixed;
+    color: #f8fafc;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    min-height: 100vh;
   }
 }
 
-/* Custom Google Docs Canvas Scrollbar */
+/* Custom Frosted Glass Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f3f4;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #dadce0;
-  border-radius: 5px;
+  background: rgba(244, 63, 94, 0.3);
+  border-radius: 9999px;
+  backdrop-filter: blur(8px);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #bdc1c6;
+  background: rgba(244, 63, 94, 0.55);
 }
 
 /* ProseMirror / TipTap Editor Page Styling */
@@ -36,14 +42,15 @@
   width: 816px;       /* standard 8.5 inch paper width at 96 DPI */
   padding: 72px 72px; /* 0.75 in margin */
   background: #ffffff;
-  color: #202124;
-  box-shadow: 0 1px 3px 1px rgba(60,64,67,.15), 0 1px 2px 0 rgba(60,64,67,.3);
-  font-family: 'Roboto', Arial, sans-serif;
+  color: #1e293b;
+  border-radius: 24px;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.15);
+  font-family: 'Inter', 'Roboto', Arial, sans-serif;
   font-size: 11pt;
-  line-height: 1.5;
-  margin: 24px auto 60px auto;
+  line-height: 1.6;
+  margin: 16px auto 60px auto;
   position: relative;
-  transition: transform 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .ProseMirror p {
@@ -52,29 +59,29 @@
 
 .ProseMirror h1 {
   font-size: 20pt;
-  font-weight: 400;
+  font-weight: 700;
   line-height: 1.25;
   margin-top: 1.25rem;
   margin-bottom: 0.5rem;
-  color: #000000;
+  color: #0f172a;
 }
 
 .ProseMirror h2 {
   font-size: 16pt;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.3;
   margin-top: 1rem;
   margin-bottom: 0.4rem;
-  color: #000000;
+  color: #1e293b;
 }
 
 .ProseMirror h3 {
   font-size: 13pt;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.35;
   margin-top: 0.8rem;
   margin-bottom: 0.3rem;
-  color: #434343;
+  color: #334155;
 }
 
 .ProseMirror ul {
@@ -90,29 +97,33 @@
 }
 
 .ProseMirror blockquote {
-  border-left: 3px solid #dadce0;
+  border-left: 3px solid #f43f5e;
   padding-left: 1rem;
-  color: #5f6368;
+  color: #475569;
   font-style: italic;
   margin: 0.75rem 0;
+  background: rgba(244, 63, 94, 0.04);
+  padding: 8px 12px;
+  border-radius: 0 8px 8px 0;
 }
 
 .ProseMirror pre {
-  background: #202124;
-  color: #f8f9fa;
+  background: #0f172a;
+  color: #f8fafc;
   font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
+  padding: 0.85rem 1.15rem;
+  border-radius: 12px;
   overflow-x: auto;
-  margin: 0.75rem 0;
+  margin: 0.85rem 0;
   font-size: 9.5pt;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .ProseMirror code {
-  background: #f1f3f4;
-  color: #d93025;
+  background: #f1f5f9;
+  color: #e11d48;
   padding: 0.15rem 0.35rem;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 0.9em;
   font-family: monospace;
 }
@@ -146,13 +157,14 @@
   width: 100%;
   margin: 1rem 0;
   overflow: hidden;
+  border-radius: 8px;
 }
 
 .ProseMirror td,
 .ProseMirror th {
   min-width: 1em;
-  border: 1px solid #dadce0;
-  padding: 6px 8px;
+  border: 1px solid #e2e8f0;
+  padding: 8px 10px;
   vertical-align: top;
   box-sizing: border-box;
   position: relative;
@@ -160,7 +172,7 @@
 
 .ProseMirror th {
   font-weight: bold;
-  background-color: #f8f9fa;
+  background-color: #f8fafc;
 }
 
 .ProseMirror .selectedCell:after {
@@ -168,7 +180,7 @@
   position: absolute;
   content: "";
   left: 0; right: 0; top: 0; bottom: 0;
-  background: rgba(26, 115, 232, 0.15);
+  background: rgba(244, 63, 94, 0.15);
   pointer-events: none;
 }
 
@@ -198,11 +210,11 @@
   user-select: none;
   color: #ffffff;
   padding: 2px 6px;
-  border-radius: 3px 3px 3px 0;
+  border-radius: 4px 4px 4px 0;
   white-space: nowrap;
   pointer-events: none;
   opacity: 0.95;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
   transition: opacity 0.3s ease;
   z-index: 10;
 }
@@ -263,7 +275,7 @@
 
 /* Placeholder */
 .ProseMirror p.is-editor-empty:first-child::before {
-  color: #9aa0a6;
+  color: #94a3b8;
   content: attr(data-placeholder);
   float: left;
   height: 0;

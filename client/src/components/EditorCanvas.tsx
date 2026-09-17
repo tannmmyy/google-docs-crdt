@@ -242,17 +242,17 @@ export const EditorCanvas: React.FC<EditorCanvasProps> = ({
   };
 
   return (
-    <div className="flex flex-col flex-1 h-full overflow-hidden bg-[#f0f4f9]">
+    <div className="flex flex-col flex-1 h-full overflow-hidden bg-transparent">
       {/* Google Docs Toolbar */}
       <GoogleDocsToolbar editor={editor} onPrint={handlePrint} />
 
       {/* Google Docs Horizontal Ruler */}
       {showRuler && (
-        <div className="h-4 bg-[#f9fbfd] border-b border-[#e0e0e0] flex items-center justify-center no-print relative select-none">
-          <div className="w-[816px] h-full flex items-end justify-between px-18 text-[9px] text-gray-400 font-mono">
+        <div className="h-4 bg-white/5 border-b border-white/10 flex items-center justify-center no-print relative select-none backdrop-blur-sm">
+          <div className="w-[816px] h-full flex items-end justify-between px-18 text-[9px] text-rose-200/50 font-mono">
             {Array.from({ length: 9 }).map((_, i) => (
               <div key={i} className="flex flex-col items-center">
-                <span className="h-1.5 w-px bg-gray-300 mb-0.5" />
+                <span className="h-1.5 w-px bg-white/20 mb-0.5" />
                 <span>{i + 1}</span>
               </div>
             ))}
@@ -281,26 +281,26 @@ export const EditorCanvas: React.FC<EditorCanvasProps> = ({
       </div>
 
       {/* Document Telemetry Footer */}
-      <div className="h-6 bg-white border-t border-[#dadce0] px-6 flex items-center justify-between text-[11px] text-gray-500 select-none no-print">
+      <div className="h-7 bg-black/40 backdrop-blur-md border-t border-white/10 px-6 flex items-center justify-between text-[11px] text-rose-200/70 select-none no-print">
         <div className="flex items-center space-x-4">
-          <span>Words: <strong>{wordCount}</strong></span>
-          <span>Characters: <strong>{charCount}</strong></span>
-          <span className="text-gray-400">|</span>
-          <span className="flex items-center space-x-1">
+          <span>Words: <strong className="text-white">{wordCount}</strong></span>
+          <span>Characters: <strong className="text-white">{charCount}</strong></span>
+          <span className="text-white/20">|</span>
+          <span className="flex items-center space-x-1.5">
             <span className="w-2 h-2 rounded-full" style={{ backgroundColor: session.user.color }} />
-            <span>Logged in as: <strong>{session.user.name}</strong></span>
+            <span>Logged in as: <strong className="text-white">{session.user.name}</strong></span>
           </span>
           {collisionUsers.length > 0 && (
             <>
-              <span className="text-gray-400">|</span>
-              <span className="text-amber-600 font-bold flex items-center space-x-1">
+              <span className="text-white/20">|</span>
+              <span className="text-amber-400 font-bold flex items-center space-x-1">
                 <AlertTriangle className="w-3 h-3" />
                 <span>Hotspot: {collisionUsers.length} editors here</span>
               </span>
             </>
           )}
         </div>
-        <div className="flex items-center space-x-2 text-gray-400">
+        <div className="flex items-center space-x-2 text-rose-200/50">
           <span>CRDT: YATA / Yjs v13</span>
           <span>•</span>
           <span>Sync: WebSocket v2</span>

@@ -6,6 +6,7 @@ import { EditorCanvas } from './components/EditorCanvas';
 import { SplitScreenView } from './components/SplitScreenView';
 import { NetworkChaosPanel } from './components/NetworkChaosPanel';
 import { ActivityFeedDrawer } from './components/ActivityFeedDrawer';
+import { GlassSidebar } from './components/GlassSidebar';
 import { ShareModal } from './components/ShareModal';
 import { VersionHistoryModal } from './components/VersionHistoryModal';
 
@@ -258,60 +259,103 @@ ${html}
   };
 
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#f0f4f9]">
-      {/* Authentic Google Docs Header */}
-      <GoogleDocsHeader
-        title={docTitle}
-        onTitleChange={handleTitleChange}
-        connectionStatus={connectionStatus}
-        activeUsers={activeUsers}
+    <div className="flex h-screen w-screen overflow-hidden font-sans select-none">
+      {/* ------------------------------------------------------------- */}
+      {/* Floating Glassmorphic Sidebar & Dock (Reference UI)           */}
+      {/* ------------------------------------------------------------- */}
+      <GlassSidebar
+        activeTab={
+          isSplitScreen ? 'split' : isActivityFeedOpen ? 'activity' : isChaosPanelOpen ? 'chaos' : 'editor'
+        }
+        onSelectTab={(tab) => {
+          if (tab === 'editor') {
+            setIsSplitScreen(false);
+            setIsActivityFeedOpen(false);
+            setIsChaosPanelOpen(false);
+          } else if (tab === 'activity') {
+            setIsActivityFeedOpen(true);
+            setIsChaosPanelOpen(false);
+          } else if (tab === 'split') {
+            setIsSplitScreen(!isSplitScreen);
+          } else if (tab === 'chaos') {
+            setIsChaosPanelOpen(true);
+            setIsActivityFeedOpen(false);
+          } else if (tab === 'history') {
+            setIsHistoryModalOpen(true);
+          }
+        }}
         currentUser={session.user}
-        onUpdateUser={handleUpdateUser}
-        onToggleActivityFeed={() => setIsActivityFeedOpen(!isActivityFeedOpen)}
-        isActivityFeedOpen={isActivityFeedOpen}
+        activeUsers={activeUsers}
         activityCount={activities.length}
-        onToggleSplitScreen={() => setIsSplitScreen(!isSplitScreen)}
-        isSplitScreen={isSplitScreen}
-        onToggleChaosPanel={() => setIsChaosPanelOpen(!isChaosPanelOpen)}
-        isChaosPanelOpen={isChaosPanelOpen}
+        onOpenProfileModal={() => {
+          // Trigger profile edit
+          const newName = prompt('Enter your collaborator name:', session.user.name);
+          if (newName && newName.trim()) {
+            handleUpdateUser(newName.trim(), session.user.color);
+          }
+        }}
         onOpenShareModal={() => setIsShareModalOpen(true)}
-        onOpenHistoryModal={() => setIsHistoryModalOpen(true)}
-        onExportMarkdown={handleExportMarkdown}
-        onExportHtml={handleExportHtml}
-        onPrint={() => window.print()}
         onNewDocument={handleNewDocument}
       />
 
-      {/* Main Workspace Area */}
-      <main className="flex-1 flex overflow-hidden relative">
-        {isSplitScreen ? (
-          <SplitScreenView roomName={roomName} primarySession={session} />
-        ) : (
-          <EditorCanvas
-            session={session}
-            onEditorReady={(editor) => setEditorInstance(editor)}
-            onActivityLogged={logActivity}
-          />
-        )}
-
-        {/* Real-Time Activity Feed Drawer */}
-        <ActivityFeedDrawer
-          isOpen={isActivityFeedOpen}
-          onClose={() => setIsActivityFeedOpen(false)}
-          activities={activities}
+      {/* ------------------------------------------------------------- */}
+      {/* Main Workspace Area                                           */}
+      {/* ------------------------------------------------------------- */}
+      <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
+        {/* Authentic Google Docs Header */}
+        <GoogleDocsHeader
+          title={docTitle}
+          onTitleChange={handleTitleChange}
+          connectionStatus={connectionStatus}
+          activeUsers={activeUsers}
           currentUser={session.user}
-          onClearFeed={handleClearActivities}
+          onUpdateUser={handleUpdateUser}
+          onToggleActivityFeed={() => setIsActivityFeedOpen(!isActivityFeedOpen)}
+          isActivityFeedOpen={isActivityFeedOpen}
+          activityCount={activities.length}
+          onToggleSplitScreen={() => setIsSplitScreen(!isSplitScreen)}
+          isSplitScreen={isSplitScreen}
+          onToggleChaosPanel={() => setIsChaosPanelOpen(!isChaosPanelOpen)}
+          isChaosPanelOpen={isChaosPanelOpen}
+          onOpenShareModal={() => setIsShareModalOpen(true)}
+          onOpenHistoryModal={() => setIsHistoryModalOpen(true)}
+          onExportMarkdown={handleExportMarkdown}
+          onExportHtml={handleExportHtml}
+          onPrint={() => window.print()}
+          onNewDocument={handleNewDocument}
         />
 
-        {/* Distributed Chaos & CRDT Telemetry Drawer */}
-        <NetworkChaosPanel
-          session={session}
-          isOpen={isChaosPanelOpen}
-          onClose={() => setIsChaosPanelOpen(false)}
-          isSimulatedOffline={isSimulatedOffline}
-          onToggleOffline={handleToggleOffline}
-        />
-      </main>
+        {/* Main Workspace Canvas */}
+        <main className="flex-1 flex overflow-hidden relative">
+          {isSplitScreen ? (
+            <SplitScreenView roomName={roomName} primarySession={session} />
+          ) : (
+            <EditorCanvas
+              session={session}
+              onEditorReady={(editor) => setEditorInstance(editor)}
+              onActivityLogged={logActivity}
+            />
+          )}
+
+          {/* Real-Time Activity Feed Drawer */}
+          <ActivityFeedDrawer
+            isOpen={isActivityFeedOpen}
+            onClose={() => setIsActivityFeedOpen(false)}
+            activities={activities}
+            currentUser={session.user}
+            onClearFeed={handleClearActivities}
+          />
+
+          {/* Distributed Chaos & CRDT Telemetry Drawer */}
+          <NetworkChaosPanel
+            session={session}
+            isOpen={isChaosPanelOpen}
+            onClose={() => setIsChaosPanelOpen(false)}
+            isSimulatedOffline={isSimulatedOffline}
+            onToggleOffline={handleToggleOffline}
+          />
+        </main>
+      </div>
 
       {/* Modals */}
       <ShareModal

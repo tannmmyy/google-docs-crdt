@@ -89,12 +89,12 @@ export const GoogleDocsToolbar: React.FC<GoogleDocsToolbarProps> = ({ editor, on
   };
 
   return (
-    <div className="bg-[#edf2fa] px-3 py-1 border-b border-[#dadce0] flex items-center space-x-1 flex-wrap text-[#444746] rounded-full mx-4 my-1 shadow-sm no-print">
+    <div className="bg-[#280e1a]/80 backdrop-blur-2xl px-3.5 py-1.5 border border-white/15 flex items-center space-x-1 flex-wrap text-rose-100/90 rounded-2xl mx-auto my-2 shadow-[0_15px_35px_rgba(0,0,0,0.6)] no-print max-w-4xl justify-center">
       {/* Undo & Redo */}
       <button
         onClick={() => editor.chain().focus().undo().run()}
         disabled={!editor.can().undo()}
-        className="p-1.5 hover:bg-[#d3e3fd] hover:text-[#041e49] disabled:opacity-30 rounded transition-colors"
+        className="p-1.5 hover:bg-white/15 hover:text-white disabled:opacity-20 rounded-xl transition-colors"
         title="Undo (Ctrl+Z)"
       >
         <Undo className="w-4 h-4" />
@@ -102,7 +102,7 @@ export const GoogleDocsToolbar: React.FC<GoogleDocsToolbarProps> = ({ editor, on
       <button
         onClick={() => editor.chain().focus().redo().run()}
         disabled={!editor.can().redo()}
-        className="p-1.5 hover:bg-[#d3e3fd] hover:text-[#041e49] disabled:opacity-30 rounded transition-colors"
+        className="p-1.5 hover:bg-white/15 hover:text-white disabled:opacity-20 rounded-xl transition-colors"
         title="Redo (Ctrl+Y)"
       >
         <Redo className="w-4 h-4" />
