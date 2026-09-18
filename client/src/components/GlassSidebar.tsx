@@ -15,7 +15,9 @@ import {
   ChevronLeft,
   Share2,
   FolderPlus,
-  Sparkles
+  Sparkles,
+  X,
+  UserPlus
 } from 'lucide-react';
 import { UserAwareness } from '../lib/types';
 
@@ -41,6 +43,7 @@ export const GlassSidebar: React.FC<GlassSidebarProps> = ({
   onNewDocument,
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
+  const [isCollaboratorsModalOpen, setIsCollaboratorsModalOpen] = useState(false);
 
   return (
     <aside className="relative flex items-center h-full p-4 z-40 select-none no-print transition-all duration-300">
@@ -292,27 +295,35 @@ export const GlassSidebar: React.FC<GlassSidebarProps> = ({
                 </button>
 
                 {/* Active Collaborators */}
-                <div className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs text-rose-100/80 hover:bg-white/10 transition-all">
-                  <div className="flex items-center space-x-3">
-                    <Users className="w-4 h-4 text-indigo-400" />
-                    <span>Collaborators</span>
+                <button
+                  onClick={() => setIsCollaboratorsModalOpen(true)}
+                  className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs text-rose-100/80 hover:bg-white/10 hover:text-white transition-all cursor-pointer group text-left"
+                  title="View all active collaborators"
+                >
+                  <div className="flex items-center space-x-3 min-w-0">
+                    <Users className="w-4 h-4 text-indigo-400 group-hover:scale-110 transition-transform flex-shrink-0" />
+                    <span className="truncate font-medium">Collaborators</span>
                   </div>
-                  <div className="flex items-center -space-x-1.5">
-                    {activeUsers.slice(0, 3).map((u) => (
-                      <div
-                        key={u.id}
-                        className="w-5 h-5 rounded-full text-[9px] font-bold flex items-center justify-center border border-white text-white"
-                        style={{ backgroundColor: u.color }}
-                        title={u.name}
-                      >
-                        {u.avatar}
-                      </div>
-                    ))}
+                  <div className="flex items-center space-x-1.5 flex-shrink-0">
+                    <div className="flex items-center -space-x-2">
+                      {activeUsers.slice(0, 3).map((u) => (
+                        <div
+                          key={u.id}
+                          className="w-6 h-6 rounded-full text-[10px] font-bold flex items-center justify-center border-2 border-[#240916] text-white shadow-sm ring-1 ring-white/20"
+                          style={{ backgroundColor: u.color }}
+                          title={u.name}
+                        >
+                          {u.avatar}
+                        </div>
+                      ))}
+                    </div>
                     {activeUsers.length > 3 && (
-                      <span className="text-[10px] text-rose-200/80 ml-1 font-bold">+{activeUsers.length - 3}</span>
+                      <span className="px-1.5 py-0.5 rounded-full bg-white/15 text-[10px] text-white font-bold border border-white/20 shadow-xs">
+                        +{activeUsers.length - 3}
+                      </span>
                     )}
                   </div>
-                </div>
+                </button>
               </div>
             </div>
 
@@ -391,6 +402,105 @@ export const GlassSidebar: React.FC<GlassSidebarProps> = ({
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-white/60 flex-shrink-0" />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* 3. Active Collaborators Popover Modal                         */}
+      {/* ------------------------------------------------------------- */}
+      {isCollaboratorsModalOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-[#240916]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] max-w-md w-full overflow-hidden border border-white/20 text-white">
+            <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
+              <div className="flex items-center space-x-2.5">
+                <div className="w-8 h-8 rounded-xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-indigo-300">
+                  <Users className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-white">Active Collaborators</h3>
+                  <p className="text-[11px] text-rose-200/60">
+                    {activeUsers.length} {activeUsers.length === 1 ? 'peer' : 'peers'} connected to this room
+                  </p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsCollaboratorsModalOpen(false)} 
+                className="text-rose-200/50 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="p-4 space-y-2 max-h-72 overflow-y-auto">
+              {activeUsers.map((user) => {
+                const isYou = user.id === currentUser.id;
+                return (
+                  <div
+                    key={user.id}
+                    className="flex items-center justify-between p-2.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+                  >
+                    <div className="flex items-center space-x-3 min-w-0">
+                      <div className="relative">
+                        <div
+                          className="w-8 h-8 rounded-full text-white font-bold text-xs flex items-center justify-center border border-white/30 shadow-sm"
+                          style={{ backgroundColor: user.color }}
+                        >
+                          {user.avatar}
+                        </div>
+                        <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 border-2 border-[#240916] rounded-full" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold text-white truncate flex items-center space-x-1.5">
+                          <span>{user.name}</span>
+                          {isYou && (
+                            <span className="text-[10px] text-rose-200/70 font-normal bg-white/10 px-1.5 py-0.2 rounded-md">
+                              You
+                            </span>
+                          )}
+                        </p>
+                        <p className="text-[10px] text-emerald-400 font-medium mt-0.5 flex items-center space-x-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                          <span>Active now</span>
+                        </p>
+                      </div>
+                    </div>
+
+                    {isYou ? (
+                      <button
+                        onClick={() => {
+                          setIsCollaboratorsModalOpen(false);
+                          onOpenProfileModal();
+                        }}
+                        className="text-[11px] px-2.5 py-1 bg-white/10 hover:bg-white/20 text-rose-100 rounded-xl border border-white/15 transition-colors font-medium"
+                      >
+                        Edit You
+                      </button>
+                    ) : (
+                      <div 
+                        className="w-3.5 h-3.5 rounded-full border border-white/30"
+                        style={{ backgroundColor: user.color }}
+                        title={`Cursor color: ${user.color}`}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="px-5 py-3.5 bg-white/5 border-t border-white/10 flex items-center justify-between">
+              <span className="text-xs text-rose-200/60 font-medium">Want to invite others?</span>
+              <button
+                onClick={() => {
+                  setIsCollaboratorsModalOpen(false);
+                  onOpenShareModal();
+                }}
+                className="flex items-center space-x-1.5 px-4 py-1.5 bg-gradient-to-r from-rose-500 via-pink-600 to-indigo-600 hover:opacity-95 text-white font-semibold text-xs rounded-xl shadow-md border border-white/20 transition-all"
+              >
+                <UserPlus className="w-3.5 h-3.5" />
+                <span>Share Link</span>
+              </button>
             </div>
           </div>
         </div>
