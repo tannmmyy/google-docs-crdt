@@ -3,9 +3,7 @@ node_modules/
 client/node_modules/
 server/node_modules/
 
-# Build outputs
-client/dist/
-server/dist/
+# Build outputs (tracked for guaranteed deployment)
 
 # Persisted document storage (binary CRDT files, not needed in source control)
 server/storage/
