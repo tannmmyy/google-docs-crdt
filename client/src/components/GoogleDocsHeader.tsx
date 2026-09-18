@@ -113,47 +113,50 @@ export const GoogleDocsHeader: React.FC<GoogleDocsHeaderProps> = ({
     switch (connectionStatus) {
       case 'connected':
         return (
-          <span className="flex items-center text-xs text-gray-500 hover:bg-gray-100 px-2 py-1 rounded cursor-pointer transition-colors" title="All changes saved to cloud">
-            <Cloud className="w-4 h-4 mr-1 text-gray-500" />
-            <Check className="w-3 h-3 text-green-600 -ml-2 mr-1" />
-            <span className="text-[12px]">Saved to Drive</span>
+          <span className="flex items-center text-xs text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full backdrop-blur-md cursor-pointer transition-colors shadow-xs hover:bg-emerald-500/20" title="All changes synced in real-time across peers">
+            <Cloud className="w-3.5 h-3.5 mr-1 text-emerald-400" />
+            <Check className="w-3 h-3 text-emerald-300 -ml-1.5 mr-1" />
+            <span className="text-[11px] font-medium">Saved to Drive</span>
           </span>
         );
       case 'connecting':
         return (
-          <span className="flex items-center text-xs text-amber-600 px-2 py-1 rounded animate-pulse">
-            <Cloud className="w-4 h-4 mr-1" />
-            <span className="text-[12px]">Connecting...</span>
+          <span className="flex items-center text-xs text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full backdrop-blur-md animate-pulse">
+            <Cloud className="w-3.5 h-3.5 mr-1 text-amber-400" />
+            <span className="text-[11px] font-medium">Connecting...</span>
           </span>
         );
       case 'offline':
       case 'disconnected':
         return (
-          <span className="flex items-center text-xs text-rose-600 bg-rose-50 px-2 py-1 rounded border border-rose-200" title="Offline mode: changes are cached locally in IndexedDB and will sync upon reconnection">
-            <CloudOff className="w-4 h-4 mr-1" />
-            <span className="text-[12px] font-medium">Offline (IndexedDB Active)</span>
+          <span className="flex items-center text-xs text-rose-300 bg-rose-500/15 border border-rose-500/30 px-2.5 py-0.5 rounded-full backdrop-blur-md" title="Offline mode: changes are cached locally in IndexedDB and will sync upon reconnection">
+            <CloudOff className="w-3.5 h-3.5 mr-1 text-rose-400" />
+            <span className="text-[11px] font-medium">Offline (IndexedDB Active)</span>
           </span>
         );
     }
   };
 
   return (
-    <header className="bg-white border-b border-[#dadce0] px-4 pt-2.5 pb-1 select-none flex flex-col no-print">
-      <div className="flex items-center justify-between">
+    <header className="mx-4 mt-3 mb-1 px-5 py-2.5 rounded-[26px] bg-gradient-to-r from-[#3a1523]/85 via-[#1f0914]/90 to-[#2c0e1c]/85 backdrop-blur-2xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.2)] select-none flex flex-col no-print relative overflow-visible transition-all duration-300">
+      {/* Subtle ambient glass highlight */}
+      <div className="absolute -top-12 left-1/4 w-72 h-16 bg-rose-500/15 rounded-full blur-2xl pointer-events-none" />
+
+      <div className="flex items-center justify-between relative z-10">
         {/* Left: Brand Logo + Title & Menus */}
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-3.5">
           {/* App Brand Logo */}
           <div 
             onClick={onNewDocument} 
             title="Create New Document"
-            className="cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 group mr-0.5"
+            className="cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 group"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#1a73e8] via-[#4338ca] to-[#7c3aed] flex items-center justify-center shadow-sm group-hover:shadow-md text-white relative overflow-hidden transition-shadow">
-              <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-500 via-pink-600 to-indigo-600 flex items-center justify-center border border-white/25 shadow-[0_4px_15px_rgba(225,29,72,0.35)] group-hover:shadow-[0_4px_20px_rgba(225,29,72,0.5)] text-white relative overflow-hidden transition-all">
+              <svg viewBox="0 0 24 24" className="w-5 h-5 text-white drop-shadow-sm" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
                 <polyline points="14 2 14 8 20 8" />
-                <line x1="9" y1="13" x2="15" y2="13" stroke="#60a5fa" strokeWidth="2" />
-                <line x1="9" y1="17" x2="13" y2="17" stroke="#93c5fd" strokeWidth="2" />
+                <line x1="9" y1="13" x2="15" y2="13" stroke="#fecdd3" strokeWidth="2" />
+                <line x1="9" y1="17" x2="13" y2="17" stroke="#fda4af" strokeWidth="2" />
                 <circle cx="16" cy="17" r="1.2" fill="#34d399" stroke="none" />
               </svg>
             </div>
@@ -161,7 +164,7 @@ export const GoogleDocsHeader: React.FC<GoogleDocsHeaderProps> = ({
 
           <div className="flex flex-col">
             {/* Document Title & Save Status */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2.5">
               {isEditingTitle ? (
                 <input
                   type="text"
@@ -170,66 +173,68 @@ export const GoogleDocsHeader: React.FC<GoogleDocsHeaderProps> = ({
                   onBlur={handleTitleSubmit}
                   onKeyDown={(e) => e.key === 'Enter' && handleTitleSubmit()}
                   autoFocus
-                  className="font-normal text-[18px] text-gray-800 border border-blue-500 rounded px-1.5 py-0.5 focus:outline-none"
+                  className="font-semibold text-[17px] text-white bg-white/10 border border-rose-400/50 rounded-xl px-2.5 py-0.5 focus:outline-none focus:ring-2 focus:ring-rose-500/40 backdrop-blur-md"
                 />
               ) : (
                 <h1
                   onClick={() => setIsEditingTitle(true)}
-                  className="font-normal text-[18px] text-[#202124] hover:border hover:border-gray-300 rounded px-1.5 py-0.5 cursor-pointer max-w-md truncate"
+                  className="font-semibold text-[17px] text-white hover:bg-white/10 rounded-xl px-2 py-0.5 cursor-pointer max-w-md truncate transition-colors tracking-tight flex items-center space-x-1.5"
                   title="Click to rename document"
                 >
-                  {title}
+                  <span>{title}</span>
                 </h1>
               )}
               {getStatusBadge()}
             </div>
 
             {/* Menu Bar */}
-            <div ref={menuRef} className="flex items-center space-x-0.5 -ml-1 text-[13px] text-[#202124] relative">
+            <div ref={menuRef} className="flex items-center space-x-1 -ml-1 mt-0.5 text-[12.5px] text-rose-200/80 relative">
               {/* File Menu */}
               <div className="relative">
                 <button
                   onClick={() => setActiveMenu(activeMenu === 'file' ? null : 'file')}
-                  className={`px-2 py-0.5 rounded hover:bg-gray-100 ${activeMenu === 'file' ? 'bg-gray-100 font-medium' : ''}`}
+                  className={`px-2.5 py-0.5 rounded-lg hover:bg-white/10 hover:text-white transition-all ${
+                    activeMenu === 'file' ? 'bg-white/15 text-white font-medium shadow-inner' : ''
+                  }`}
                 >
                   File
                 </button>
                 {activeMenu === 'file' && (
-                  <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-gray-200 rounded shadow-lg z-50 py-1.5 text-xs text-gray-700">
+                  <div className="absolute top-full left-0 mt-2 w-56 bg-[#240916]/95 backdrop-blur-2xl border border-white/20 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] z-50 py-2 text-xs text-rose-100">
                     <button
                       onClick={() => { onNewDocument(); setActiveMenu(null); }}
-                      className="w-full text-left px-4 py-2 hover:bg-blue-50 flex items-center space-x-2"
+                      className="w-full text-left px-4 py-2 hover:bg-white/10 hover:text-white flex items-center space-x-2.5 transition-colors"
                     >
-                      <FolderPlus className="w-4 h-4 text-gray-500" />
+                      <FolderPlus className="w-4 h-4 text-rose-400" />
                       <span>New Document</span>
                     </button>
                     <button
                       onClick={() => { onOpenHistoryModal(); setActiveMenu(null); }}
-                      className="w-full text-left px-4 py-2 hover:bg-blue-50 flex items-center space-x-2"
+                      className="w-full text-left px-4 py-2 hover:bg-white/10 hover:text-white flex items-center space-x-2.5 transition-colors"
                     >
-                      <History className="w-4 h-4 text-gray-500" />
-                      <span>Version history</span>
+                      <History className="w-4 h-4 text-rose-400" />
+                      <span>Version History</span>
                     </button>
-                    <div className="border-t border-gray-100 my-1" />
+                    <div className="border-t border-white/10 my-1" />
                     <button
                       onClick={() => { onExportMarkdown(); setActiveMenu(null); }}
-                      className="w-full text-left px-4 py-2 hover:bg-blue-50 flex items-center space-x-2"
+                      className="w-full text-left px-4 py-2 hover:bg-white/10 hover:text-white flex items-center space-x-2.5 transition-colors"
                     >
-                      <FileDown className="w-4 h-4 text-gray-500" />
+                      <FileDown className="w-4 h-4 text-rose-400" />
                       <span>Download as Markdown (.md)</span>
                     </button>
                     <button
                       onClick={() => { onExportHtml(); setActiveMenu(null); }}
-                      className="w-full text-left px-4 py-2 hover:bg-blue-50 flex items-center space-x-2"
+                      className="w-full text-left px-4 py-2 hover:bg-white/10 hover:text-white flex items-center space-x-2.5 transition-colors"
                     >
-                      <FileCode className="w-4 h-4 text-gray-500" />
+                      <FileCode className="w-4 h-4 text-rose-400" />
                       <span>Download as HTML (.html)</span>
                     </button>
                     <button
                       onClick={() => { onPrint(); setActiveMenu(null); }}
-                      className="w-full text-left px-4 py-2 hover:bg-blue-50 flex items-center space-x-2"
+                      className="w-full text-left px-4 py-2 hover:bg-white/10 hover:text-white flex items-center space-x-2.5 transition-colors"
                     >
-                      <Printer className="w-4 h-4 text-gray-500" />
+                      <Printer className="w-4 h-4 text-rose-400" />
                       <span>Print (Ctrl+P)</span>
                     </button>
                   </div>
@@ -239,7 +244,7 @@ export const GoogleDocsHeader: React.FC<GoogleDocsHeaderProps> = ({
               {/* Edit Menu */}
               <button
                 onClick={() => document.execCommand('undo')}
-                className="px-2 py-0.5 rounded hover:bg-gray-100"
+                className="px-2.5 py-0.5 rounded-lg hover:bg-white/10 hover:text-white transition-all"
               >
                 Edit
               </button>
@@ -248,24 +253,26 @@ export const GoogleDocsHeader: React.FC<GoogleDocsHeaderProps> = ({
               <div className="relative">
                 <button
                   onClick={() => setActiveMenu(activeMenu === 'view' ? null : 'view')}
-                  className={`px-2 py-0.5 rounded hover:bg-gray-100 ${activeMenu === 'view' ? 'bg-gray-100 font-medium' : ''}`}
+                  className={`px-2.5 py-0.5 rounded-lg hover:bg-white/10 hover:text-white transition-all ${
+                    activeMenu === 'view' ? 'bg-white/15 text-white font-medium shadow-inner' : ''
+                  }`}
                 >
                   View
                 </button>
                 {activeMenu === 'view' && (
-                  <div className="absolute top-full left-0 mt-1 w-52 bg-white border border-gray-200 rounded shadow-lg z-50 py-1.5 text-xs text-gray-700">
+                  <div className="absolute top-full left-0 mt-2 w-56 bg-[#240916]/95 backdrop-blur-2xl border border-white/20 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] z-50 py-2 text-xs text-rose-100">
                     <button
                       onClick={() => { onToggleSplitScreen(); setActiveMenu(null); }}
-                      className="w-full text-left px-4 py-2 hover:bg-blue-50 flex items-center space-x-2"
+                      className="w-full text-left px-4 py-2 hover:bg-white/10 hover:text-white flex items-center space-x-2.5 transition-colors"
                     >
-                      <Columns className="w-4 h-4 text-gray-500" />
+                      <Columns className="w-4 h-4 text-cyan-400" />
                       <span>{isSplitScreen ? 'Exit Split Screen' : 'Split-Screen Multi-Peer'}</span>
                     </button>
                     <button
                       onClick={() => { onToggleChaosPanel(); setActiveMenu(null); }}
-                      className="w-full text-left px-4 py-2 hover:bg-blue-50 flex items-center space-x-2"
+                      className="w-full text-left px-4 py-2 hover:bg-white/10 hover:text-white flex items-center space-x-2.5 transition-colors"
                     >
-                      <Activity className="w-4 h-4 text-gray-500" />
+                      <Activity className="w-4 h-4 text-amber-400" />
                       <span>{isChaosPanelOpen ? 'Hide Chaos Panel' : 'Show Chaos & CRDT Panel'}</span>
                     </button>
                   </div>
@@ -275,7 +282,7 @@ export const GoogleDocsHeader: React.FC<GoogleDocsHeaderProps> = ({
               {/* Tools Menu */}
               <button
                 onClick={onToggleChaosPanel}
-                className="px-2 py-0.5 rounded hover:bg-gray-100 flex items-center"
+                className="px-2.5 py-0.5 rounded-lg hover:bg-white/10 hover:text-white transition-all flex items-center"
               >
                 Distributed Tools
               </button>
@@ -284,17 +291,17 @@ export const GoogleDocsHeader: React.FC<GoogleDocsHeaderProps> = ({
         </div>
 
         {/* Right: User Profile Chip + Presence Avatars + Action Controls + Share Button */}
-        <div className="flex items-center space-x-2.5">
+        <div className="flex items-center space-x-2">
           {/* Current User Name Pill (Click to Change Name) */}
           <button
             onClick={() => setIsProfileModalOpen(true)}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 border border-gray-300 text-xs text-gray-700 transition-colors shadow-xs"
+            className="flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/15 border border-white/15 text-xs text-white backdrop-blur-md transition-all shadow-sm hover:scale-[1.02]"
             title="Click to change your display name and color"
           >
-            <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: currentUser.color }} />
-            <span className="font-semibold max-w-[120px] truncate">{currentUser.name}</span>
-            <span className="text-[10px] text-gray-400 font-normal">(You)</span>
-            <Edit3 className="w-3 h-3 text-gray-500 ml-0.5" />
+            <span className="w-2.5 h-2.5 rounded-full ring-2 ring-white/30" style={{ backgroundColor: currentUser.color }} />
+            <span className="font-semibold max-w-[110px] truncate">{currentUser.name}</span>
+            <span className="text-[10px] text-rose-200/60 font-normal">(You)</span>
+            <Edit3 className="w-3 h-3 text-rose-200/70 ml-0.5" />
           </button>
 
           {/* Active Collaborators Avatar Stack */}
@@ -304,11 +311,11 @@ export const GoogleDocsHeader: React.FC<GoogleDocsHeaderProps> = ({
                 key={user.id}
                 onClick={() => user.id === currentUser.id && setIsProfileModalOpen(true)}
                 title={`${user.name} ${user.id === currentUser.id ? '(You - click to edit)' : ''}`}
-                className="relative inline-flex items-center justify-center w-8 h-8 rounded-full border-2 border-white text-white font-bold text-xs shadow-sm hover:z-20 hover:scale-110 transition-transform cursor-pointer"
+                className="relative inline-flex items-center justify-center w-8 h-8 rounded-full border-2 border-white/40 text-white font-bold text-xs shadow-md hover:z-20 hover:scale-110 transition-transform cursor-pointer"
                 style={{ backgroundColor: user.color }}
               >
                 {user.avatar}
-                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full" />
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 border-2 border-[#240916] rounded-full" />
               </div>
             ))}
           </div>
@@ -316,31 +323,31 @@ export const GoogleDocsHeader: React.FC<GoogleDocsHeaderProps> = ({
           {/* Quick Split Screen Multi-Peer Simulator */}
           <button
             onClick={onToggleSplitScreen}
-            className={`flex items-center px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+            className={`flex items-center px-3.5 py-1.5 rounded-full text-xs font-medium border backdrop-blur-md transition-all shadow-sm ${
               isSplitScreen 
-                ? 'bg-blue-50 border-blue-300 text-blue-700 font-semibold' 
-                : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                ? 'bg-white/25 border-white/40 text-white font-semibold shadow-inner' 
+                : 'bg-white/10 border-white/15 text-rose-100 hover:bg-white/15 hover:text-white'
             }`}
             title="Open side-by-side collaborative window to test real-time typing and cursor presence"
           >
-            <Columns className="w-3.5 h-3.5 mr-1.5 text-blue-600" />
+            <Columns className="w-3.5 h-3.5 mr-1.5 text-cyan-400" />
             <span>{isSplitScreen ? 'Single Mode' : 'Dual Peer Test'}</span>
           </button>
 
           {/* Real-Time Activity Feed Button */}
           <button
             onClick={onToggleActivityFeed}
-            className={`flex items-center px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+            className={`flex items-center px-3.5 py-1.5 rounded-full text-xs font-medium border backdrop-blur-md transition-all shadow-sm ${
               isActivityFeedOpen 
-                ? 'bg-emerald-50 border-emerald-300 text-emerald-800 font-semibold shadow-xs' 
-                : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                ? 'bg-emerald-500/20 border-emerald-400/40 text-emerald-200 font-semibold shadow-inner' 
+                : 'bg-white/10 border-white/15 text-rose-100 hover:bg-white/15 hover:text-white'
             }`}
             title="Real-Time Activity Feed: See who changed what in real-time"
           >
-            <Activity className="w-3.5 h-3.5 mr-1.5 text-emerald-600" />
+            <Activity className="w-3.5 h-3.5 mr-1.5 text-emerald-400" />
             <span>Activity</span>
             {activityCount > 0 && (
-              <span className="ml-1.5 px-1.5 py-0.2 bg-emerald-600 text-white rounded-full text-[10px] font-bold">
+              <span className="ml-1.5 px-1.5 py-0.2 bg-emerald-500 text-white rounded-full text-[10px] font-bold">
                 {activityCount}
               </span>
             )}
@@ -349,21 +356,21 @@ export const GoogleDocsHeader: React.FC<GoogleDocsHeaderProps> = ({
           {/* Chaos / CRDT Telemetry Inspector */}
           <button
             onClick={onToggleChaosPanel}
-            className={`flex items-center px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+            className={`flex items-center px-3.5 py-1.5 rounded-full text-xs font-medium border backdrop-blur-md transition-all shadow-sm ${
               isChaosPanelOpen 
-                ? 'bg-amber-50 border-amber-300 text-amber-800' 
-                : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                ? 'bg-amber-500/20 border-amber-400/40 text-amber-200 font-semibold shadow-inner' 
+                : 'bg-white/10 border-white/15 text-rose-100 hover:bg-white/15 hover:text-white'
             }`}
             title="Inspect CRDT state and simulate network drops / latency"
           >
-            <Activity className="w-3.5 h-3.5 mr-1.5 text-amber-600" />
+            <Activity className="w-3.5 h-3.5 mr-1.5 text-amber-400" />
             <span>Chaos & CRDT</span>
           </button>
 
           {/* Share Button */}
           <button
             onClick={onOpenShareModal}
-            className="flex items-center px-5 py-2 bg-[#1a73e8] hover:bg-[#1557b0] text-white font-medium text-xs rounded-full shadow-sm hover:shadow transition-all space-x-1.5"
+            className="flex items-center px-5 py-2 bg-gradient-to-r from-rose-500 via-pink-600 to-indigo-600 hover:opacity-95 text-white font-semibold text-xs rounded-full shadow-[0_4px_15px_rgba(225,29,72,0.4)] border border-white/20 transition-all hover:scale-105 active:scale-95 space-x-1.5"
           >
             <Share2 className="w-4 h-4" />
             <span>Share</span>
@@ -373,16 +380,16 @@ export const GoogleDocsHeader: React.FC<GoogleDocsHeaderProps> = ({
 
       {/* Edit User Name & Color Modal */}
       {isProfileModalOpen && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden border border-gray-100">
-            <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-[#240916]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] max-w-sm w-full overflow-hidden border border-white/20 text-white">
+            <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <User className="w-4 h-4 text-blue-600" />
-                <h3 className="text-sm font-semibold text-gray-800">Change Your Name & Color</h3>
+                <User className="w-4 h-4 text-rose-400" />
+                <h3 className="text-sm font-semibold text-white">Change Your Name & Color</h3>
               </div>
               <button 
                 onClick={() => setIsProfileModalOpen(false)} 
-                className="text-gray-400 hover:text-gray-600 p-1 rounded-lg"
+                className="text-rose-200/50 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -390,7 +397,7 @@ export const GoogleDocsHeader: React.FC<GoogleDocsHeaderProps> = ({
 
             <form onSubmit={handleProfileSubmit} className="p-5 space-y-4">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-rose-200/80 mb-1">
                   Your Collaborator Display Name
                 </label>
                 <input
@@ -398,13 +405,13 @@ export const GoogleDocsHeader: React.FC<GoogleDocsHeaderProps> = ({
                   value={profileName}
                   onChange={(e) => setProfileName(e.target.value)}
                   placeholder="Enter your name (e.g. Alex)..."
-                  className="w-full text-xs border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none font-medium"
+                  className="w-full text-xs bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white placeholder-white/40 focus:ring-2 focus:ring-rose-500 focus:outline-none font-medium backdrop-blur-md"
                   autoFocus
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1.5">
+                <label className="block text-xs font-medium text-rose-200/80 mb-1.5">
                   Pick Your Cursor & Avatar Color
                 </label>
                 <div className="grid grid-cols-4 gap-1.5">
@@ -413,10 +420,10 @@ export const GoogleDocsHeader: React.FC<GoogleDocsHeaderProps> = ({
                       key={col.hex}
                       type="button"
                       onClick={() => setProfileColor(col.hex)}
-                      className={`flex items-center space-x-1.5 p-1.5 rounded-lg border text-[11px] transition-all ${
+                      className={`flex items-center space-x-1.5 p-1.5 rounded-xl border text-[11px] transition-all ${
                         profileColor === col.hex 
-                          ? 'border-blue-600 bg-blue-50 font-bold ring-2 ring-blue-300' 
-                          : 'border-gray-200 hover:bg-gray-50'
+                          ? 'border-rose-400 bg-rose-500/20 text-white font-bold ring-2 ring-rose-400/50' 
+                          : 'border-white/10 bg-white/5 hover:bg-white/10 text-rose-200/80'
                       }`}
                     >
                       <span className="w-3.5 h-3.5 rounded-full flex-shrink-0" style={{ backgroundColor: col.hex }} />
@@ -427,28 +434,28 @@ export const GoogleDocsHeader: React.FC<GoogleDocsHeaderProps> = ({
               </div>
 
               {/* Preview */}
-              <div className="bg-gray-50 p-3 rounded-lg border border-gray-200 flex items-center space-x-2">
-                <span className="text-[11px] text-gray-500">Live Preview:</span>
+              <div className="bg-white/5 p-3 rounded-2xl border border-white/10 flex items-center space-x-2.5">
+                <span className="text-[11px] text-rose-200/60">Live Preview:</span>
                 <div 
-                  className="w-6 h-6 rounded-full text-white text-[11px] font-bold flex items-center justify-center"
+                  className="w-7 h-7 rounded-full text-white text-xs font-bold flex items-center justify-center shadow-md border border-white/30"
                   style={{ backgroundColor: profileColor }}
                 >
                   {profileName.trim().charAt(0).toUpperCase() || 'U'}
                 </div>
-                <span className="text-xs font-semibold text-gray-800 truncate">{profileName || 'Your Name'}</span>
+                <span className="text-xs font-semibold text-white truncate">{profileName || 'Your Name'}</span>
               </div>
 
               <div className="flex justify-end space-x-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setIsProfileModalOpen(false)}
-                  className="px-4 py-1.5 text-xs text-gray-600 hover:bg-gray-100 rounded-lg"
+                  className="px-4 py-1.5 text-xs text-rose-200/70 hover:bg-white/10 hover:text-white rounded-xl transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 text-xs bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm"
+                  className="px-4 py-1.5 text-xs bg-gradient-to-r from-rose-500 to-indigo-600 hover:opacity-95 text-white font-semibold rounded-xl shadow-[0_4px_15px_rgba(225,29,72,0.4)] border border-white/20 transition-all"
                 >
                   Save Profile
                 </button>

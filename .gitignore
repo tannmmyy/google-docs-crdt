@@ -8,7 +8,7 @@ client/dist/
 server/dist/
 
 # Persisted document storage (binary CRDT files, not needed in source control)
-server/storage/*.ydoc
+server/storage/
 
 # Environment files
 .env
